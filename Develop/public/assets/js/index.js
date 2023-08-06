@@ -4,6 +4,10 @@ let saveNoteBtn;
 let newNoteBtn;
 let noteList;
 
+if (window.location.pathname === '/') {
+  toNotesBtn = document.querySelector('#redirectBtn');
+}
+
 if (window.location.pathname === '/notes') {
   noteTitle = document.querySelector('.note-title');
   noteText = document.querySelector('.note-textarea');
@@ -170,6 +174,23 @@ const renderNoteList = async (notes) => {
   }
 };
 
+// Function that redirects to notes page
+const goToNotes = () => {
+  fetch('/redirect')
+    .then(function(response) {
+      if (response.ok) {
+        window.location.href = response.url;
+      } else {
+        console.log('Error:', response.statusText);
+      }
+    })
+    .catch(function(error) {
+      console.log('Error:', error);
+    });
+};
+
+
+
 // Gets notes from the db and renders them to the sidebar
 const getAndRenderNotes = () => getNotes().then(renderNoteList);
 
@@ -178,6 +199,11 @@ if (window.location.pathname === '/notes') {
   newNoteBtn.addEventListener('click', handleNewNoteView);
   noteTitle.addEventListener('keyup', handleRenderSaveBtn);
   noteText.addEventListener('keyup', handleRenderSaveBtn);
+}
+
+// Hopefully when on main page, adds the eventlistener to redirect btn
+if (window.location.pathname === '/') {
+  toNotesBtn.addEventListener('click', goToNotes);
 }
 
 getAndRenderNotes();
